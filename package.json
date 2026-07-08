@@ -1,0 +1,6 @@
+{
+  "name": "miro-agenda-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Flux ICS des RDV closing d'Adrien depuis le CRM MIRO"
+}
