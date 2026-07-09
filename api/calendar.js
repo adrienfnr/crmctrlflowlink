@@ -1,8 +1,4 @@
-// api/calendar.js
-// Route serverless Vercel : va chercher les RDV sur le CRM, filtre sur closer.id === 14,
-// et renvoie un fichier .ics que Apple Calendar peut lire en abonnement.
-
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     const token = process.env.CRM_TOKEN;
     if (!token) {
@@ -10,7 +6,6 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Fenêtre de dates : on prend large (30 jours en arrière, 90 jours en avant)
     const now = new Date();
     const start = new Date(now);
     start.setDate(start.getDate() - 30);
@@ -18,7 +13,6 @@ export default async function handler(req, res) {
     end.setDate(end.getDate() + 90);
 
     const fmt = (d) => d.toISOString().split('T')[0];
-
     const url = `https://ctrlflow.controleweb.fr/api/crm/agenda/all-rdv?start=${fmt(start)}&end=${fmt(end)}`;
 
     const crmResponse = await fetch(url, {
@@ -47,11 +41,9 @@ export default async function handler(req, res) {
   } catch (err) {
     res.status(500).send(`Erreur serveur: ${err.message}`);
   }
-}
+};
 
 function toIcsDate(isoString) {
-  // "2026-07-06T08:00:00+02:00" -> "20260706T080000" (heure locale, sans Z)
-  // On garde l'heure telle quelle et on la marque comme locale (pas UTC)
   const d = new Date(isoString);
   const pad = (n) => String(n).padStart(2, '0');
   return (
